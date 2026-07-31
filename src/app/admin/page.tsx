@@ -60,20 +60,20 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 text-black">
-      <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
-        <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">TAJ MAHAL - Admin Panel</h1>
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-8 text-black">
+      <div className="max-w-2xl mx-auto bg-white p-4 sm:p-8 rounded-lg shadow">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-blue-700">TAJ MAHAL - Admin Panel</h1>
         
-        <form onSubmit={handleSave} className="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <h2 className="text-xl font-semibold mb-4">Add or Update Record</h2>
-          <div className="flex gap-4">
+        <form onSubmit={handleSave} className="mb-8 p-4 sm:p-6 bg-blue-50 rounded-lg border border-blue-200">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">Add or Update Record</h2>
+          <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
               <input 
                 type="date" 
                 value={date} 
                 onChange={e => setDate(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-3 sm:p-2 border border-gray-300 rounded"
                 required
               />
             </div>
@@ -83,16 +83,16 @@ export default function AdminPage() {
                 type="number" 
                 value={number} 
                 onChange={e => setNumber(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-3 sm:p-2 border border-gray-300 rounded"
                 placeholder="e.g. 45"
                 required
               />
             </div>
-            <div className="flex items-end">
+            <div className="flex sm:items-end">
               <button 
                 type="submit" 
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition"
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 sm:py-2 px-6 rounded shadow transition"
               >
                 {loading ? 'Saving...' : 'Save'}
               </button>
