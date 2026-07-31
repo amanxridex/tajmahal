@@ -17,8 +17,8 @@ export function middleware(req: NextRequest) {
 
       // We fall back to the hardcoded ones if environment variables aren't set yet, 
       // but they should be added to Vercel for maximum security!
-      const validUser = process.env.ADMIN_USERNAME || 'jaadugar';
-      const validPwd = process.env.ADMIN_PASSWORD || 'SUPERD#123098';
+      const validUser = process.env.ADMIN_USERNAME || 'admin';
+      const validPwd = process.env.ADMIN_PASSWORD || 'admin';
 
       if (user === validUser && pwd === validPwd) {
         return NextResponse.next();
