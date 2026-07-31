@@ -52,6 +52,13 @@ export default function AdminPage() {
   // Sort dates
   const sortedDates = Object.keys(records).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 
+  // Format YYYY-MM-DD to DD-MM-YYYY
+  const formatDate = (dateStr: string) => {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return dateStr;
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-8 text-black">
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
@@ -68,8 +75,6 @@ export default function AdminPage() {
                 onChange={e => setDate(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
                 required
-                min="2026-01-01"
-                max="2026-07-30"
               />
             </div>
             <div className="flex-1">
@@ -113,7 +118,7 @@ export default function AdminPage() {
               )}
               {sortedDates.map((d) => (
                 <tr key={d} className="hover:bg-gray-50">
-                  <td className="p-3 border font-medium">{d}</td>
+                  <td className="p-3 border font-medium">{formatDate(d)}</td>
                   <td className="p-3 border text-center text-red-600 font-bold text-lg">{records[d]}</td>
                   <td className="p-3 border text-center">
                     <button 

@@ -10,6 +10,8 @@ const redis = url && token
   ? new Redis({ url, token })
   : null;
 
+import RecordsClient from './RecordsClient';
+
 export default async function RecordsPage() {
   let records: Record<string, string> = {};
   
@@ -20,8 +22,6 @@ export default async function RecordsPage() {
       console.error("Failed to load records from Redis", e);
     }
   }
-
-  const sortedDates = Object.keys(records).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
   return (
     <div style={{ backgroundColor: '#000', color: '#fff', minHeight: '100vh', padding: '20px', fontFamily: 'sans-serif' }}>
@@ -34,32 +34,7 @@ export default async function RecordsPage() {
           TAJ MAHAL RECORDS
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', marginBottom: '20px', fontWeight: 'bold' }}>
-          <thead>
-            <tr style={{ background: '#333', color: '#fff' }}>
-              <th style={{ padding: '12px', border: '1px solid #555' }}>Date</th>
-              <th style={{ padding: '12px', border: '1px solid #555' }}>Taj Mahal</th>
-            </tr>
-          </thead>
-          <tbody style={{ background: '#fff', color: '#000' }}>
-            {sortedDates.length > 0 ? (
-              sortedDates.map((date) => (
-                <tr key={date} style={{ borderBottom: '1px solid #ccc' }}>
-                  <td style={{ padding: '12px', border: '1px solid #ccc' }}>{date}</td>
-                  <td style={{ padding: '12px', border: '1px solid #ccc', color: 'red', fontSize: '20px' }}>
-                    {records[date]}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={2} style={{ padding: '12px', textAlign: 'center', border: '1px solid #ccc' }}>
-                  {redis ? "No records available. Add some in the admin panel." : "Database not connected. Please configure Vercel KV."}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <RecordsClient records={records} hasRedis={!!redis} />
       </div>
     </div>
   );
