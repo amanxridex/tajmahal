@@ -4,34 +4,25 @@ import type { NextRequest } from 'next/server';
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
   
-  // We want to protect the /admin page AND any requests that try to modify data (POST/DELETE to /api/records)
-  const isProtectedUI = url.pathname.startsWith('/admin');
+  // We want to protect the /admin page AND  // Check if it's the admin UI or the write API (POST, PUT, DELETE)
+  const isProtectedUI = url.pathname.startsWith('/admin') && !url.pathname.startsWith('/admin/login');
   const isProtectedAPI = url.pathname.startsWith('/api/records') && req.method !== 'GET';
   
   if (isProtectedUI || isProtectedAPI) {
-    const basicAuth = req.headers.get('authorization');
+    const adminToken = req.cookies.get('admin_token');
 
-    if (basicAuth) {
-      const authValue = basicAuth.split(' ')[1];
-      const [user, pwd] = atob(authValue).split(':');
-
-      // We fall back to the hardcoded ones if environment variables aren't set yet, 
-      // but they should be added to Vercel for maximum security!
-      const validUser = process.env.ADMIN_USERNAME || 'admin';
-      const validPwd = process.env.ADMIN_PASSWORD || 'admin';
-
-      if (user === validUser && pwd === validPwd) {
-        return NextResponse.next();
-      }
+    if (adminToken && adminToken.value === 'authenticated') {
+      return NextResponse.next();
     }
     
-    // If not authenticated, force the browser to pop up a login prompt
-    return new NextResponse('Authentication required', {
-      status: 401,
-      headers: {
-        'WWW-Authenticate': 'Basic realm="Secure Admin Area"'
-      }
-    });
+    // If it's an API request, return 401 JSON
+    if (isProtectedAPI) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // If it's a UI request to /admin, redirect them to the custom login page
+    const loginUrl = new URL('/admin/login', req.url);
+    return NextResponse.redirect(loginUrl);
   }
 }
 
