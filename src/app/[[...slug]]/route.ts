@@ -44,7 +44,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       const todayNumber = records[todayStr] || '--';
       const yesterdayNumber = records[yesterdayStr] || '--';
 
-      const marqueeText = `<span style="color: #03F; font-weight: bold;">TAJ MAHAL</span> <span style="color: #FF0000; font-weight: bold;">» YESTERDAY (${yesterdayStr}): ${yesterdayNumber} &nbsp;&nbsp;||&nbsp;&nbsp; TODAY (${todayStr}): ${todayNumber} (Result at 4:00 PM IST)</span>`;
+      function formatDate(dateStr: string) {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        return dateStr;
+      }
+      const todayFormatted = formatDate(todayStr);
+      const yesterdayFormatted = formatDate(yesterdayStr);
+
+      const marqueeText = `<span style="color: #03F; font-weight: bold;">TAJ MAHAL</span> <span style="color: #FF0000; font-weight: bold;">» YESTERDAY (${yesterdayFormatted}): ${yesterdayNumber} &nbsp;&nbsp;||&nbsp;&nbsp; TODAY (${todayFormatted}): ${todayNumber} (Result at 4:00 PM IST)</span>`;
       
       // Time logic for Main LIVE section
       const d = new Date();
