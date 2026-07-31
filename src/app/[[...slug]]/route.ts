@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
+import * as cheerio from 'cheerio';
 
 const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
 const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
@@ -117,6 +118,31 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
       // Replace marquee contents
       html = html.replace(/<marquee(.*?)>([\s\S]*?)<\/marquee>/ig, `<marquee$1>${marqueeText}</marquee>`);
+
+      // Add TAJ MAHAL column to the chart table using Cheerio
+      const $ = cheerio.load(html);
+      $('table').each((i, el) => {
+        const text = $(el).text();
+        if (text.includes('DESAWER') && text.includes('DELHI BAZAR') && text.includes('Date')) {
+          const rows = $(el).find('tr');
+          rows.each((rowIndex, row) => {
+            if (rowIndex === 0) {
+              $('<td class="name" style="font-weight:bold;">TAJ MAHAL</td>').insertAfter($(row).find('td').first());
+            } else {
+              const dateTd = $(row).find('td').first();
+              const dateText = dateTd.text().trim();
+              const parts = dateText.split('-');
+              let recordValue = '--';
+              if (parts.length === 3) {
+                const dbDateKey = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                recordValue = records[dbDateKey] || '--';
+              }
+              $('<td style="font-weight:bold; font-size:18px;">' + recordValue + '</td>').insertAfter(dateTd);
+            }
+          });
+        }
+      });
+      html = $.html();
       
       // Auto-refresh script
       const autoRefreshScript = `
