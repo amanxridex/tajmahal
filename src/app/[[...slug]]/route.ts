@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       const todayNumber = records[todayStr] || '--';
       const yesterdayNumber = records[yesterdayStr] || '--';
 
-      const marqueeText = `TAJ MAHAL » YESTERDAY (${yesterdayStr}): ${yesterdayNumber} || TODAY (${todayStr}): ${todayNumber} (Result at 4:00 PM IST)`;
+      const marqueeText = `<span style="color: #03F; font-weight: bold;">TAJ MAHAL</span> <span style="color: #FF0000; font-weight: bold;">» YESTERDAY (${yesterdayStr}): ${yesterdayNumber} &nbsp;&nbsp;||&nbsp;&nbsp; TODAY (${todayStr}): ${todayNumber} (Result at 4:00 PM IST)</span>`;
       
       // Overwrite the specific DESAWER section with TAJ MAHAL and TODAY'S NUMBER
       html = html.replace(
