@@ -46,13 +46,32 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
       const marqueeText = `<span style="color: #03F; font-weight: bold;">TAJ MAHAL</span> <span style="color: #FF0000; font-weight: bold;">» YESTERDAY (${yesterdayStr}): ${yesterdayNumber} &nbsp;&nbsp;||&nbsp;&nbsp; TODAY (${todayStr}): ${todayNumber} (Result at 4:00 PM IST)</span>`;
       
-      // Overwrite the specific DESAWER section with TAJ MAHAL and TODAY'S NUMBER
+      // Time logic for Main LIVE section
+      const d = new Date();
+      const istOffset = 5.5 * 60 * 60 * 1000;
+      const istTime = new Date(d.getTime() + istOffset);
+      const hours = istTime.getUTCHours();
+      const minutes = istTime.getUTCMinutes();
+      const isAfter330PM = hours > 15 || (hours === 15 && minutes >= 30);
+
+      let targetDateForLive = yesterdayFormatted;
+      let targetNumberForLive = yesterdayNumber;
+
+      if (todayNumber !== '--') {
+        targetDateForLive = todayFormatted;
+        targetNumberForLive = todayNumber;
+      } else if (isAfter330PM) {
+        targetDateForLive = todayFormatted;
+        targetNumberForLive = '--';
+      }
+      
+      // Overwrite the specific DESAWER section with TAJ MAHAL and dynamic date/number
       html = html.replace(
         /<strong class="namelive">DESAWER<br>[\s\S]*?<\/strong>\s*<\/center>/g,
-        `<strong class="namelive" style="color:#03F; font-size:25px;">TAJ MAHAL<br></strong>
+        `<strong class="namelive" style="color:#03F; font-size:25px;">TAJ MAHAL<br><span style="font-size: 16px; color: #ffeb3b;">(${targetDateForLive})</span><br></strong>
          <strong style="font-size:36px;font-weight:bold;color:white;">
             <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
-            ${todayNumber} <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
+            ${targetNumberForLive} <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
          </strong>
          </center>
          <a href="/tajmahal-records" style="display:block; text-decoration:none; background-image: linear-gradient(blue 50%, #000); font-weight: bold;color: #fff; font-size: 20px; border-style: outset; margin: 10px; padding: 5px; border-radius: 20px; text-align: center;text-transform: capitalize;">
@@ -67,14 +86,29 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       const autoRefreshScript = `
       <script>
         (function() {
+          let displayedDate = "${targetDateForLive}";
           let currentTodayNumber = "${todayNumber}";
           setInterval(async function() {
             try {
+              const d = new Date();
+              const todayStrLoc = d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+              const parts = todayStrLoc.split('-');
+              const todayFormatted = parts[2] + '-' + parts[1] + '-' + parts[0];
+
+              const istOffset = 5.5 * 60 * 60 * 1000;
+              const istTime = new Date(d.getTime() + istOffset);
+              const hours = istTime.getUTCHours();
+              const minutes = istTime.getUTCMinutes();
+              const isAfter330PM = hours > 15 || (hours === 15 && minutes >= 30);
+              
+              if (isAfter330PM && displayedDate !== todayFormatted) {
+                 window.location.reload();
+                 return;
+              }
+
               const res = await fetch('/api/records');
               const data = await res.json();
-              const d = new Date();
-              const todayStr = d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-              const newNumber = data[todayStr] || '--';
+              const newNumber = data[todayStrLoc] || '--';
               if (newNumber !== '--' && newNumber !== currentTodayNumber) {
                 // Number got updated today! Reload!
                 window.location.reload();
