@@ -3,11 +3,11 @@ import { Redis } from '@upstash/redis';
 // Force dynamic rendering since records change over time
 export const dynamic = 'force-dynamic';
 
-const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-  ? new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    })
+const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+
+const redis = url && token
+  ? new Redis({ url, token })
   : null;
 
 export default async function RecordsPage() {
