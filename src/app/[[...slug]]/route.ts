@@ -87,6 +87,34 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
          </a>`
       );
 
+      const tajMahalBox = `
+<tr>
+  <td colspan="2" valign="top" style="color:#000;">
+      <div align="center">
+          <div id="PanelRecord" style="margin-bottom: 20px;">
+              <h5 style="color:green;">TAJ MAHAL</h5>
+              <span style="font-size:17px;color:yellow;">
+                  (<b>04:00 PM</b>)
+              </span><br/>
+              <strong style="font-size:18px;color:aqua;">
+                  {${yesterdayNumber}} »
+              </strong>
+              <span style="color:yellow; font-size:18px;">
+                  [<b>${todayNumber}</b>]
+                  <br>
+                  <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="34">
+              </span>
+          </div>
+      </div>
+  </td>
+</tr>`;
+
+      // Inject the TAJ MAHAL box at the top of the records table
+      html = html.replace(
+        /<table width="100%" border="0" style="border-color:red;">\s*<tr>\s*<td/i,
+        `<table width="100%" border="0" style="border-color:red;">\n${tajMahalBox}\n<tr><td`
+      );
+
       // Replace marquee contents
       html = html.replace(/<marquee(.*?)>([\s\S]*?)<\/marquee>/ig, `<marquee$1>${marqueeText}</marquee>`);
       
