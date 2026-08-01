@@ -15,8 +15,8 @@ export async function POST(request: Request) {
     if (redis) {
       const dbUser = await redis.get('admin_username');
       const dbPwd = await redis.get('admin_password');
-      if (dbUser && typeof dbUser === 'string') validUser = dbUser;
-      if (dbPwd && typeof dbPwd === 'string') validPwd = dbPwd;
+      if (dbUser !== null && dbUser !== undefined) validUser = String(dbUser);
+      if (dbPwd !== null && dbPwd !== undefined) validPwd = String(dbPwd);
     }
 
     if (username === validUser && password === validPwd) {
