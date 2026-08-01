@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       if (dbPwd !== null && dbPwd !== undefined) validPwd = String(dbPwd);
     }
 
-    if (username === validUser && password === validPwd) {
+    if (username.trim().toLowerCase() === validUser.trim().toLowerCase() && password === validPwd) {
       const response = NextResponse.json({ success: true });
       
       // Set an HTTP-Only cookie for authentication
