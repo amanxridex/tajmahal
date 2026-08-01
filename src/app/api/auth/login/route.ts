@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server';
+import { Redis } from '@upstash/redis';
+
+const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+const redis = url && token ? new Redis({ url, token }) : null;
 
 export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
 
-    const validUser = process.env.ADMIN_USERNAME || 'admin';
-    const validPwd = process.env.ADMIN_PASSWORD || 'admin';
+    let validUser = 'admin';
+    let validPwd = 'admin';
+
+    if (redis) {
+      const dbUser = await redis.get('admin_username');
+      const dbPwd = await redis.get('admin_password');
+      if (dbUser && typeof dbUser === 'string') validUser = dbUser;
+      if (dbPwd && typeof dbPwd === 'string') validPwd = dbPwd;
+    }
 
     if (username === validUser && password === validPwd) {
       const response = NextResponse.json({ success: true });
