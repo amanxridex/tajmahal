@@ -114,7 +114,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       const firstLiveGame = $('.namelive').first();
       if (firstLiveGame.length) {
         firstLiveGame.replaceWith(`
-<strong class="namelive" style="color:#03F; font-size:25px;">TAJ MAHAL<br><span style="font-size: 16px; color: #ffeb3b;">(${targetDateForLive})</span><br>
+<strong class="namelive">TAJ MAHAL<br><span style="font-size: 16px; color: #ffeb3b;">(${targetDateForLive})</span><br>
   <strong style="font-size:36px;font-weight:bold;color:white;">
      <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
      ${targetNumberForLive} <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
