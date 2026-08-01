@@ -137,7 +137,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 const dbDateKey = `${parts[2]}-${parts[1]}-${parts[0]}`;
                 recordValue = records[dbDateKey] || '--';
               }
-              $('<td style="font-weight:bold; font-size:18px;">' + recordValue + '</td>').insertAfter(dateTd);
+              $('<td class="num" style="background:#ffffff; color:#FF0000; font-weight:bold; font-size:18px;">' + recordValue + '</td>').insertAfter(dateTd);
             }
           });
         }
