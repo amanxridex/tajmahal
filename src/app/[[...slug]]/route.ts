@@ -74,19 +74,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         targetNumberForLive = '--';
       }
       
-      // Overwrite the specific DESAWER section with TAJ MAHAL and dynamic date/number
-      html = html.replace(
-        /<strong class="namelive">DESAWER<br>[\s\S]*?<\/strong>\s*<\/center>/g,
-        `<strong class="namelive" style="color:#03F; font-size:25px;">TAJ MAHAL<br><span style="font-size: 16px; color: #ffeb3b;">(${targetDateForLive})</span><br></strong>
-         <strong style="font-size:36px;font-weight:bold;color:white;">
-            <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
-            ${targetNumberForLive} <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
-         </strong>
-         </center>
-         <a href="/tajmahal-records" style="display:block; text-decoration:none; background-image: linear-gradient(blue 50%, #000); font-weight: bold;color: #fff; font-size: 20px; border-style: outset; margin: 10px; padding: 5px; border-radius: 20px; text-align: center;text-transform: capitalize;">
-            TAJ MAHAL RECORDS
-         </a>`
-      );
+      // (Old DESAWER regex removed - replaced dynamically via Cheerio later)
 
       const tajMahalBox = `
 <tr>
@@ -121,6 +109,23 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
       // Add TAJ MAHAL column to the chart table using Cheerio
       const $ = cheerio.load(html);
+
+      // Replace the very first live game with TAJ MAHAL
+      const firstLiveGame = $('.namelive').first();
+      if (firstLiveGame.length) {
+        firstLiveGame.replaceWith(`
+<strong class="namelive" style="color:#03F; font-size:25px;">TAJ MAHAL<br><span style="font-size: 16px; color: #ffeb3b;">(${targetDateForLive})</span><br>
+  <strong style="font-size:36px;font-weight:bold;color:white;">
+     <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
+     ${targetNumberForLive} <img src="https://bhagirathsatta.com/images/LIVE.gif" height="20" width="44">
+  </strong>
+</strong>
+<a href="/tajmahal-records" style="display:block; text-decoration:none; background-image: linear-gradient(blue 50%, #000); font-weight: bold;color: #fff; font-size: 20px; border-style: outset; margin: 10px; padding: 5px; border-radius: 20px; text-align: center;text-transform: capitalize;">
+   TAJ MAHAL RECORDS
+</a>
+        `);
+      }
+
       $('table').each((i, el) => {
         const text = $(el).text();
         if (text.includes('DESAWER') && text.includes('DELHI BAZAR') && text.includes('Date')) {
