@@ -14,6 +14,9 @@ export default function AdminPage() {
   const [credLoading, setCredLoading] = useState(false);
   const [credMessage, setCredMessage] = useState('');
   
+  // Filter state
+  const [selectedMonth, setSelectedMonth] = useState('all');
+  
   const router = useRouter();
 
   useEffect(() => {
@@ -89,6 +92,20 @@ export default function AdminPage() {
   // Sort dates
   const sortedDates = Object.keys(records).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 
+  // Available months
+  const availableMonths = Array.from(new Set(sortedDates.map(d => d.substring(0, 7))));
+  
+  // Filter dates
+  const filteredDates = selectedMonth === 'all' 
+    ? sortedDates 
+    : sortedDates.filter(d => d.startsWith(selectedMonth));
+
+  const formatMonth = (yyyyMm: string) => {
+    const [year, month] = yyyyMm.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+  };
+
   // Format YYYY-MM-DD to DD-MM-YYYY
   const formatDate = (dateStr: string) => {
     const parts = dateStr.split('-');
@@ -145,7 +162,21 @@ export default function AdminPage() {
           </div>
         </form>
 
-        <h2 className="text-xl font-semibold mb-4">Existing Records ({sortedDates.length})</h2>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold mb-2 sm:mb-0">Existing Records ({filteredDates.length})</h2>
+          <div>
+            <select 
+              value={selectedMonth} 
+              onChange={e => setSelectedMonth(e.target.value)}
+              className="w-full sm:w-auto p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="all">All Months</option>
+              {availableMonths.map(m => (
+                <option key={m} value={m}>{formatMonth(m)}</option>
+              ))}
+            </select>
+          </div>
+        </div>
         <div className="overflow-x-auto mb-12">
           <table className="w-full border-collapse">
             <thead>
@@ -156,12 +187,12 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {sortedDates.length === 0 && (
+              {filteredDates.length === 0 && (
                 <tr>
                   <td colSpan={3} className="p-4 text-center text-gray-500 border">No records found.</td>
                 </tr>
               )}
-              {sortedDates.map((d) => (
+              {filteredDates.map((d) => (
                 <tr key={d} className="hover:bg-gray-50">
                   <td className="p-3 border font-medium">{formatDate(d)}</td>
                   <td className="p-3 border text-center text-red-600 font-bold text-lg">{records[d]}</td>
