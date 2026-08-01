@@ -40,7 +40,7 @@ export default function RecordsClient({ records, hasRedis }: { records: Record<s
         <select 
           value={selectedMonth} 
           onChange={(e) => setSelectedMonth(e.target.value)}
-          style={{ padding: '8px', fontSize: '16px', borderRadius: '5px', color: '#000' }}
+          style={{ padding: '8px', fontSize: '16px', borderRadius: '5px', color: '#000', backgroundColor: '#fff', border: '2px solid #ccc', cursor: 'pointer' }}
         >
           {months.map(m => {
             const date = new Date(`${m}-01T00:00:00Z`);
