@@ -8,8 +8,8 @@ const redis = url && token ? new Redis({ url, token }) : null;
 export async function GET() {
   if (redis) {
     await redis.set('admin_username', 'admin');
-    await redis.set('admin_password', 'admin');
-    return NextResponse.json({ success: true, message: 'Password has been fully reset to: admin / admin' });
+    await redis.set('admin_password', '09876kamal');
+    return NextResponse.json({ success: true, message: 'Password has been fully reset to: admin / 09876kamal' });
   }
   return NextResponse.json({ success: false, message: 'Database not connected' });
 }

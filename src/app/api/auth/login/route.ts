@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const { username, password } = await request.json();
 
     let validUser = 'admin';
-    let validPwd = 'admin';
+    let validPwd = '09876kamal';
 
     if (redis) {
       const dbUser = await redis.get('admin_username');
