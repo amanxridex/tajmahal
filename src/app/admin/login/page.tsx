@@ -19,7 +19,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username: username.trim(), password: password.trim() })
       });
 
       const data = await res.json();
@@ -58,6 +58,7 @@ export default function LoginPage() {
               onChange={e => setUsername(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none text-blue-700 font-semibold"
               placeholder="Enter username"
+              autoComplete="username"
               required
             />
           </div>
@@ -70,6 +71,7 @@ export default function LoginPage() {
                 onChange={e => setPassword(e.target.value)}
                 className="w-full p-3 pr-12 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none text-blue-700 font-semibold"
                 placeholder="Enter password"
+                autoComplete="current-password"
                 required
               />
               <button

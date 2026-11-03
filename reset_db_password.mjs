@@ -29,17 +29,17 @@ const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TO
 async function reset() {
   if (!url || !token) {
     console.log('No UPSTASH_REDIS_REST_URL / KV_REST_API_URL found in environment.');
-    console.log('Admin password default in code has been set to: 09876kamal');
+    console.log('Admin password default in code has been set to: admin123');
     return;
   }
 
   try {
     const redis = new Redis({ url, token });
     await redis.set('admin_username', 'admin');
-    await redis.set('admin_password', '09876kamal');
+    await redis.set('admin_password', 'admin123');
     console.log('SUCCESS: Admin credentials in Redis DB updated to:');
     console.log('  Username: admin');
-    console.log('  Password: 09876kamal');
+    console.log('  Password: admin123');
   } catch (err) {
     console.error('Failed to update Redis DB:', err);
   }

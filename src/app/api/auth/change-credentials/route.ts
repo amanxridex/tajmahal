@@ -20,7 +20,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Database not connected' }, { status: 500 });
     }
 
-    const { username, password } = await request.json();
+    const body = await request.json();
+    const username = (body.username || '').toString().trim();
+    const password = (body.password || '').toString().trim();
 
     if (!username || !password) {
       return NextResponse.json({ success: false, error: 'Username and password are required' }, { status: 400 });
